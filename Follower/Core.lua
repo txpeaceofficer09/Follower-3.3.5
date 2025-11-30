@@ -47,3 +47,5 @@ f:RegisterEvent("CHAT_MSG_RAID")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("AUTOFOLLOW_BEGIN")
 f:RegisterEvent("AUTOFOLLOW_END")
+
+print("!cffffaa00[FOLLOWER]:|r AddOn loaded.")
