@@ -1,0 +1,6 @@
+## Interface: 30300
+## Title: Follower
+## Notes: Follow control for your alts.
+## Author: SoonBeSteak @ Frostmourne
+## Version: 1.0.0
+Core.lua
