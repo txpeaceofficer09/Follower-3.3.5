@@ -21,7 +21,7 @@ local function OnEvent(self, event, msg, sender, ...)
 		SendChatMessage("I am following "..msg)
 		leader = msg
 	elseif event == "AUTOFOLLOW_END" then
-		SendChatMessage("I stopped following "..leader)
+		--SendChatMessage("I stopped following "..leader)
 	end
 end
 
