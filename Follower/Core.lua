@@ -2,16 +2,14 @@ local f = CreateFrame("Frame")
 local leader = nil
 
 local function OnEvent(self, event, msg, sender, ...)
-	if event:gsub(1, 9) == "CHAT_MSG_" then
+	if event:sub(1, 9) == "CHAT_MSG_" then
 		local cmd, params = string.split(" ", string.lower(msg), 2)
 
 		if cmd == "!follow" then
 			if params ~= "" and params ~= nil then
 				FollowUnit(params)
 			else
-				if UnitExists("target") and UnitIsPlayer("target") and UnitName("target") == sender then
-					FollowUnit(sender)
-				end
+				FollowUnit(sender)
 			end
 		elseif cmd == "!unfollow" then
 			FollowUnit(nil)
