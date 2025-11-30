@@ -11,10 +11,11 @@ local function OnEvent(self, event, msg, sender, ...)
 			else
 				FollowUnit(sender)
 			end
-		elseif cmd == "!unfollow" then
-			FollowUnit(UnitName("player"))
+		--elseif cmd == "!unfollow" then
+		--	FollowUnit(UnitName("player"))
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
+		print("[FOLLOWER]: "..event)
 		if leader ~= nil then
 			FollowUnit(leader)
 		end
