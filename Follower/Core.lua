@@ -1,5 +1,6 @@
 local f = CreateFrame("Frame")
 local leader = nil
+local lastZoneChange = nil
 
 local function OnEvent(self, event, msg, sender, ...)
 	if event:sub(1, 9) == "CHAT_MSG_" then
@@ -14,11 +15,8 @@ local function OnEvent(self, event, msg, sender, ...)
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
 		end
-	elseif event == "PLAYER_ENTERING_WORLD" then
-		print("[FOLLOWER]: "..event)
-		if leader ~= nil then
-			FollowUnit(leader)
-		end
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED then
+		lastZoneChange = GetTime()
 	elseif event == "AUTOFOLLOW_BEGIN" then
 		SendChatMessage("I am following "..msg)
 		leader = msg
@@ -27,7 +25,20 @@ local function OnEvent(self, event, msg, sender, ...)
 	end
 end
 
+local function OnUpdate(self, elapsed)
+	self.timer = (self.timer or 0) + elapsed
+
+	if self.timer >= 0.2 then
+		if lastZoneChange ~= nil and GetTime() - lastZoneChange >= 1 and leader ~= nil then
+			FollowUnit(leader)
+		end
+
+		self.timer = 0
+	end
+end
+
 f:SetScript("OnEvent", OnEvent)
+f:SetScript("OnUpdate", OnUpdate)
 
 f:RegisterEvent("CHAT_MSG_SAY")
 f:RegisterEvent("CHAT_MSG_WHISPER")
