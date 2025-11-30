@@ -7,28 +7,18 @@ local function OnEvent(self, event, msg, sender, ...)
 
 		if cmd == "!follow" then
 			if params ~= "" and params ~= nil then
-				TargetByName(params)
-				if UnitExists("target") and UnitIsPlayer("target") and UnitName("target"):find(params) then
-					FollowUnit("target")
-				end
+				FollowUnit(params)
 			else
-				TargetByName(sender)
 				if UnitExists("target") and UnitIsPlayer("target") and UnitName("target") == sender then
-					FollowUnit("target")
+					FollowUnit(sender)
 				end
 			end
-
-			TargetLastTarget()
 		elseif cmd == "!unfollow" then
 			FollowUnit(nil)
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		if leader ~= nil then
-			TargetByName(leader)
-			if UnitExists("target") and UnitIsPlayer("target") and UnitName("target") == leader then
-				FollowUnit("target")
-			end
-			TargetLastTarget()
+			FollowUnit(leader)
 		end
 	elseif event == "AUTOFOLLOW_BEGIN" then
 		print("[FOLLOWER]: Started following "..msg)
