@@ -31,6 +31,7 @@ local function OnUpdate(self, elapsed)
 	if self.timer >= 0.2 then
 		if lastZoneChange ~= nil and GetTime() - lastZoneChange >= 1 and leader ~= nil then
 			FollowUnit(leader)
+			lastZoneChange = nil
 		end
 
 		self.timer = 0
