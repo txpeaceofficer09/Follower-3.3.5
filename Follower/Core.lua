@@ -15,7 +15,7 @@ local function OnEvent(self, event, msg, sender, ...)
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
 		end
-	elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED then
+	elseif event == "PLAYER_ENTERING_WORLD" then
 		lastZoneChange = GetTime()
 	elseif event == "AUTOFOLLOW_BEGIN" then
 		SendChatMessage("I am following "..msg)
