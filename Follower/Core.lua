@@ -12,17 +12,17 @@ local function OnEvent(self, event, msg, sender, ...)
 				FollowUnit(sender)
 			end
 		elseif cmd == "!unfollow" then
-			FollowUnit(nil)
+			FollowUnit(UnitName("player"))
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		if leader ~= nil then
 			FollowUnit(leader)
 		end
 	elseif event == "AUTOFOLLOW_BEGIN" then
-		print("[FOLLOWER]: Started following "..msg)
+		SendChatMessage("I am following "..msg)
 		leader = msg
 	elseif event == "AUTOFOLLOW_END" then
-		print("[FOLLOWER]: Stopped following "..leader)
+		SendChatMessage("I stopped following "..leader)
 	end
 end
 
