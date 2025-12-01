@@ -20,15 +20,41 @@ local function OnEvent(self, event, msg, sender, ...)
 		elseif cmd == "!promote" then
 			if params ~= "" and params ~= nil then
 				if IsPartyLeader(UnitName("player")) then
+					SendChatMessage("Sure thing! Making "..params.." the party leader.", "SAY")
 					PromoteToLeader(params)
 				end
 			else
 				if IsPartyLeader(UnitName("player")) then
+					SendChatMessage("Sure thing! Making "..sender.." the party leader.", "SAY")
 					PromoteToLeader(sender)
 				end
 			end
+		elseif cmd == "!mount" then
+			local swiftMount = nil
+			local regularMount = nil
+
+			for i=1,GetNumCompanions("MOUNT"),1 do
+				local name, _, isActive = GetCompanionInfo("MOUNT", i)
+
+				if string.find(name:lower(), "swift", 1, true) then
+					swiftMount = i
+				elseif regularMount == nil then
+					regularMount = i
+				end
+			end
+
+			CallCompanion("MOUNT", swiftMount or regularMount)
+			--[[
+			if switfMount ~= nil then
+				CallCompanion("MOUNT", swiftMount)
+			else
+				CaallCompanion("MOUNT", regularMount)
+			end
+			]]
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
+		elseif cmd == "!dismount" then
+			Dismount()
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		lastZoneChange = GetTime()
@@ -71,7 +97,9 @@ f:SetScript("OnUpdate", OnUpdate)
 f:RegisterEvent("CHAT_MSG_SAY")
 f:RegisterEvent("CHAT_MSG_WHISPER")
 f:RegisterEvent("CHAT_MSG_PARTY")
+f:RegisterEvent("CHAT_MSG_PARTY_LEADER")
 f:RegisterEvent("CHAT_MSG_RAID")
+f:RegisterEvent("CHAT_MSG_RAID_LEADER")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("AUTOFOLLOW_BEGIN")
 f:RegisterEvent("AUTOFOLLOW_END")
