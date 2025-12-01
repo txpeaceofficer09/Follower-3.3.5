@@ -1,6 +1,7 @@
 local f = CreateFrame("Frame")
 local leader = nil
 local lastZoneChange = nil
+local following = false
 
 local function OnEvent(self, event, msg, sender, ...)
 	if event:sub(1, 9) == "CHAT_MSG_" then
@@ -18,10 +19,14 @@ local function OnEvent(self, event, msg, sender, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		lastZoneChange = GetTime()
 	elseif event == "AUTOFOLLOW_BEGIN" then
-		SendChatMessage("I am following "..msg)
-		leader = msg
+		if following == false or msg ~= leader then
+			SendChatMessage("I am following "..msg)
+			leader = msg
+			following = true
+		end
 	elseif event == "AUTOFOLLOW_END" then
 		--SendChatMessage("I stopped following "..leader)
+		following = false
 	end
 end
 
