@@ -33,27 +33,33 @@ local function OnEvent(self, event, msg, sender, ...)
 			local swiftMount = nil
 			local regularMount = nil
 
+			-- Use these tables to add all the mounts in my collection and then use math.random to pick a mount from the list.
+			local swiftMounts = {}
+			local regularMounts = {}
+
 			for i=1,GetNumCompanions("MOUNT"),1 do
 				local creatureID, name, spellID, icon, isActive, mountTypeID = GetCompanionInfo("MOUNT", i)
 
 				if string.find(name:lower(), "swift", 1, true) then
-					swiftMount = i
-					print("|cffffaa00[FOLLOWER]: found "..name.." fast mount.")
-					break
-				elseif regularMount == nil then
-					regularMount = i
-					print("|cffffaa00[FOLLOWER]: found "..name.." regular mount.")
+					--swiftMount = i
+					--print("|cffffaa00[FOLLOWER]: found "..name.." fast mount.")
+					--break
+				--elseif regularMount == nil then
+					--regularMount = i
+					--print("|cffffaa00[FOLLOWER]: found "..name.." regular mount.")
+					table.insert(swiftMounts, i)
+				else
+					table.insert(regularMounts, i)
 				end
 			end
 
-			CallCompanion("MOUNT", swiftMount or regularMount)
-			--[[
-			if switfMount ~= nil then
-				CallCompanion("MOUNT", swiftMount)
-			else
-				CaallCompanion("MOUNT", regularMount)
+			--CallCompanion("MOUNT", swiftMount or regularMount)
+
+			if #(swiftMounts) > 0 then
+				CallCompanion("MOUNT", swiftMounts[math.random(1, #(swiftMounts))])				
+			elseif #(regularMounts) > 0 then
+				CallCompanion("MOUNT", regularMounts[math.random(1, #(regularMounts))])
 			end
-			]]
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
 		elseif cmd == "!dismount" or cmd == "!dmnt" then
