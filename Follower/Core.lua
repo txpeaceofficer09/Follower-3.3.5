@@ -29,7 +29,7 @@ local function OnEvent(self, event, msg, sender, ...)
 					PromoteToLeader(sender)
 				end
 			end
-		elseif cmd == "!mount" then
+		elseif cmd == "!mount" or cmd == "!mnt" then
 			local swiftMount = nil
 			local regularMount = nil
 
@@ -53,7 +53,7 @@ local function OnEvent(self, event, msg, sender, ...)
 			]]
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
-		elseif cmd == "!dismount" then
+		elseif cmd == "!dismount" or cmd == "!dmnt" then
 			Dismount()
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
