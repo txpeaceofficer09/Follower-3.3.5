@@ -106,4 +106,4 @@ f:RegisterEvent("AUTOFOLLOW_END")
 f:RegisterEvent("PLAYER_UNGHOST")
 f:RegisterEvent("RESURRECT_REQUEST")
 
-print("!cffffaa00[FOLLOWER]:|r AddOn loaded.")
+print("|cffffaa00[FOLLOWER]:|r AddOn loaded.")
