@@ -19,9 +19,13 @@ local function OnEvent(self, event, msg, sender, ...)
 			end
 		elseif cmd == "!promote" then
 			if params ~= "" and params ~= nil then
-				PromoteToLeader(params)
+				if IsPartyLeader(UnitName("player")) then
+					PromoteToLeader(params)
+				end
 			else
-				PromoteToLeader(sender)
+				if IsPartyLeader(UnitName("player")) then
+					PromoteToLeader(sender)
+				end
 			end
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
