@@ -9,9 +9,13 @@ local function OnEvent(self, event, msg, sender, ...)
 
 		if cmd == "!follow" then
 			if params ~= "" and params ~= nil then
-				FollowUnit(params)
+				if following == false or params ~= leader then
+					FollowUnit(params)
+				end
 			else
-				FollowUnit(sender)
+				if following == false or sender ~= leader then
+					FollowUnit(sender)
+				end
 			end
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
