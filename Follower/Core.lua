@@ -34,12 +34,15 @@ local function OnEvent(self, event, msg, sender, ...)
 			local regularMount = nil
 
 			for i=1,GetNumCompanions("MOUNT"),1 do
-				local name, _, isActive = GetCompanionInfo("MOUNT", i)
+				local creatureID, name, spellID, icon, isActive, mountTypeID = GetCompanionInfo("MOUNT", i)
 
 				if string.find(name:lower(), "swift", 1, true) then
 					swiftMount = i
+					print("|cffffaa00[FOLLOWER]: found "..name.." fast mount.")
+					break
 				elseif regularMount == nil then
 					regularMount = i
+					print("|cffffaa00[FOLLOWER]: found "..name.." regular mount.")
 				end
 			end
 
