@@ -17,6 +17,12 @@ local function OnEvent(self, event, msg, sender, ...)
 					FollowUnit(sender)
 				end
 			end
+		elseif cmd == "!promote" then
+			if params ~= "" and params ~= nil then
+				PromoteToLeader(params)
+			else
+				PromoteToLeader(sender)
+			end
 		--elseif cmd == "!unfollow" then
 		--	FollowUnit(UnitName("player"))
 		end
@@ -30,7 +36,15 @@ local function OnEvent(self, event, msg, sender, ...)
 		end
 	elseif event == "AUTOFOLLOW_END" then
 		--SendChatMessage("I stopped following "..leader)
-		following = false
+		if not UnitIsDead("player") then
+			following = false
+		end
+	elseif event == "PLAYER_UNGHOST" then
+		lastZoneChange = GetTime()
+	elseif event == "RESURRECT_REQUEST" then
+		if following == true then
+			AcceptResurrect()
+		end
 	end
 end
 
@@ -57,5 +71,7 @@ f:RegisterEvent("CHAT_MSG_RAID")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("AUTOFOLLOW_BEGIN")
 f:RegisterEvent("AUTOFOLLOW_END")
+f:RegisterEvent("PLAYER_UNGHOST")
+f:RegisterEvent("RESURRECT_REQUEST")
 
 print("!cffffaa00[FOLLOWER]:|r AddOn loaded.")
