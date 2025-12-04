@@ -3,6 +3,8 @@ local leader = nil
 local lastZoneChange = nil
 local following = false
 
+local excludedMounts = {"Naxxramas Deathcharger"}
+
 local function OnEvent(self, event, msg, sender, ...)
 	if event:sub(1, 9) == "CHAT_MSG_" then
 		local cmd, params = string.split(" ", string.lower(msg), 2)
@@ -33,14 +35,13 @@ local function OnEvent(self, event, msg, sender, ...)
 			local swiftMount = nil
 			local regularMount = nil
 
-			-- Use these tables to add all the mounts in my collection and then use math.random to pick a mount from the list.
 			local swiftMounts = {}
 			local regularMounts = {}
 
 			for i=1,GetNumCompanions("MOUNT"),1 do
 				local creatureID, name, spellID, icon, isActive, mountTypeID = GetCompanionInfo("MOUNT", i)
 
-				if string.find(name:lower(), "swift", 1, true) then
+				if string.find(name:lower(), "swift", 1, true) or string.find(name:lower(), "great", 1, true) then
 					--swiftMount = i
 					--print("|cffffaa00[FOLLOWER]: found "..name.." fast mount.")
 					--break
@@ -69,7 +70,7 @@ local function OnEvent(self, event, msg, sender, ...)
 		lastZoneChange = GetTime()
 	elseif event == "AUTOFOLLOW_BEGIN" then
 		if following == false or msg ~= leader then
-			SendChatMessage("I am following "..msg)
+			--SendChatMessage("I am following "..msg)
 			leader = msg
 			following = true
 		end
@@ -93,6 +94,7 @@ local function OnUpdate(self, elapsed)
 	if self.timer >= 0.2 then
 		if lastZoneChange ~= nil and GetTime() - lastZoneChange >= 1 and leader ~= nil then
 			FollowUnit(leader)
+			following = true
 			lastZoneChange = nil
 		end
 
