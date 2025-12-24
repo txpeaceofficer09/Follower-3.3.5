@@ -9,7 +9,7 @@ local function OnEvent(self, event, msg, sender, ...)
 	if event:sub(1, 9) == "CHAT_MSG_" then
 		local cmd, params = string.split(" ", string.lower(msg), 2)
 
-		if cmd == "!follow" then
+		if cmd == "!follow" or cmd == "@follow" then
 			if params ~= "" and params ~= nil then
 				if following == false or params ~= leader then
 					FollowUnit(params)
@@ -19,7 +19,7 @@ local function OnEvent(self, event, msg, sender, ...)
 					FollowUnit(sender)
 				end
 			end
-		elseif cmd == "!promote" then
+		elseif cmd == "!promote" or cmd == "@promote" then
 			if params ~= "" and params ~= nil then
 				if IsPartyLeader(UnitName("player")) then
 					SendChatMessage("Sure thing! Making "..params.." the party leader.", "SAY")
@@ -31,7 +31,7 @@ local function OnEvent(self, event, msg, sender, ...)
 					PromoteToLeader(sender)
 				end
 			end
-		elseif cmd == "!mount" or cmd == "!mnt" then
+		elseif cmd == "!mount" or cmd == "!mnt" or cmd == "@mount" or cmd == "@mnt" then
 			local swiftMount = nil
 			local regularMount = nil
 
@@ -41,7 +41,7 @@ local function OnEvent(self, event, msg, sender, ...)
 			for i=1,GetNumCompanions("MOUNT"),1 do
 				local creatureID, name, spellID, icon, isActive, mountTypeID = GetCompanionInfo("MOUNT", i)
 
-				if string.find(name:lower(), "swift", 1, true) or string.find(name:lower(), "great", 1, true) then
+				if string.find(name:lower(), "swift", 1, true) or string.find(name:lower(), "great", 1, true) or string.find(name:lower(), "armored", 1, true) then
 					--swiftMount = i
 					--print("|cffffaa00[FOLLOWER]: found "..name.." fast mount.")
 					--break
