@@ -186,7 +186,7 @@ local mountDB = {
 	{ ["spellID"] = 71342, ["name"] = "Big Love Rocket", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
 	{ ["spellID"] = 69395, ["name"] = "Reins of the Onyxian Drake", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
 	{ ["spellID"] = 63796, ["name"] = "Mimiron's Head", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
-	{ ["spellID"] = 59569, ["name"] = "Reins of the Bronze Drake", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
+	{ ["spellID"] = 59569, ["name"] = "Reins of the Bronze Drake", ["fast"] = true, ["flying"] = true, ["swimming"] = false },
 	{ ["spellID"] = nil, ["name"] = "Black Drake", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
 	{ ["spellID"] = nil, ["name"] = "Twilight Drake", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
 	{ ["spellID"] = 59567, ["name"] = "Reins of the Azure Drake", ["fast"] = nil, ["flying"] = nil, ["swimming"] = false },
@@ -341,19 +341,25 @@ function CastRandomMount()
 		]]
 	end
 
+	print(("Found %d swift flying, %d regular flying, %d fast ground, %d regular ground mounts."):format(#(swiftFlyMounts), #(regularFlyMounts), #(swiftMounts), #(regularMounts)))
+
 	if GetZoneText() == "Naxxramas" and naxxMount ~= nil then
 		CallCompanion("MOUNT", naxxMount)
-	elseif IsFlyableArea() then
-		if #(swiftFlyMounts) > 0 then
-			CallCompanion("MOUNT", swiftFlyMounts[math.random(1, #(swiftFlyMounts))])
-		elseif #(regularFlyMounts) > 0 then
-			CallCompanion("MOUNT", regularFlyMounts[math.random(1, #(regularFlyMounts))])
-		end
 	else
-		if #(swiftMounts) > 0 then
-			CallCompanion("MOUNT", swiftMounts[math.random(1, #(swiftMounts))])				
-		elseif #(regularMounts) > 0 then
-			CallCompanion("MOUNT", regularMounts[math.random(1, #(regularMounts))])
+		if not IsFlyableArea() or IsModifierKeyDown() or ( #(switfFlyMounts) == 0 and #(regularFlyMounts) == 0 ) then
+			print("Mounting random ground mount.")
+			if #(swiftMounts) > 0 then
+				CallCompanion("MOUNT", swiftMounts[math.random(1, #(swiftMounts))])				
+			elseif #(regularMounts) > 0 then
+				CallCompanion("MOUNT", regularMounts[math.random(1, #(regularMounts))])
+			end
+		else
+			print("Mounting random flying mount.")
+			if #(swiftFlyMounts) > 0 then
+				CallCompanion("MOUNT", swiftFlyMounts[math.random(1, #(swiftFlyMounts))])
+			elseif #(regularFlyMounts) > 0 then
+				CallCompanion("MOUNT", regularFlyMounts[math.random(1, #(regularFlyMounts))])
+			end
 		end
 	end
 end
