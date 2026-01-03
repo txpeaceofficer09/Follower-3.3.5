@@ -266,6 +266,8 @@ local mountDB = {
 	{ ["spellID"] = 74918, ["name"] = "Wooly White Rhino", ["fast"] = true, ["flying"] = false, ["swimming"] = false },
 }
 
+local moveKeys = {"MOVEFORWARD", "MOVEBACKWARD", "TURNLEFT", "TURNRIGHT", "STRAFELEFT", "STRAFERIGHT", "JUMP"}
+
 local f = CreateFrame("Frame", nil, UIParent)
 local leader = nil
 local lastZoneChange = nil
@@ -456,22 +458,53 @@ local function OnEvent(self, event, msg, sender, ...)
 		lastZoneChange = GetTime()
 	elseif event == "AUTOFOLLOW_BEGIN" then
 		if following == false or msg ~= leader then
-			--SendChatMessage("I am following "..msg)
 			leader = msg
 			following = true
 		end
 	elseif event == "AUTOFOLLOW_END" then
-		--SendChatMessage("I stopped following "..leader)
+		local brokenByPlayer = false
+        
+		for _, action in ipairs(moveKeys) do
+			local key1, key2 = GetBindingKey(action)
 
-		--if not UnitIsDead("player") then
-		--	following = false
-		--end
+			if (key1 and IsKeyDown(key1)) or (key2 and IsKeyDown(key2)) then
+				brokenByPlayer = true
+				break
+			end
+		end
+
+		if not brokenByPlayer then
+			if GetUnitSpeed("player") > 0 or IsFalling() then
+				brokenByPlayer = true
+			end
+		end
+
+		if brokenByPlayer == true then following == false end
 	elseif event == "PLAYER_UNGHOST" then
 		lastZoneChange = GetTime()
 	elseif event == "RESURRECT_REQUEST" then
-		--if following == true then
+		local numParty, numRaid = GetNumPartyMembers(), GetNumRaidMembers()
+		local inCombat = false
+
+		if numRaid > 0 then
+			for i=1, numRaid, 1 do
+				if UnitAffectingCombat("raid"..i) then
+					inCombat = true
+					break
+				end
+			end
+		elseif numParty > 0 then
+			for i=1, numParty, 1 do
+				if UnitAffectingCombat("party"..i) then
+					inCombat = true
+					break
+				end
+			end
+		end
+
+		if inCombat == false then
 			AcceptResurrect()
-		--end
+		end
 	end
 end
 
