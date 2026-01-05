@@ -411,16 +411,34 @@ end
 
 local function OnEvent(self, event, msg, sender, ...)
 	if event:sub(1, 9) == "CHAT_MSG_" then
+		if UnitName("player") == sender then return end
+
 		local cmd, params = string.split(" ", string.lower(msg), 2)
 
 		if cmd == "!follow" or cmd == "@follow" then
 			if params ~= "" and params ~= nil then
-				if leader == nil or params ~= leader then
+				--if leader == nil or params ~= leader then
 					FollowUnit(params)
-				end
+				--end
 			else
-				if leader == nil or sender ~= leader then
+				--if leader == nil or sender ~= leader then
 					FollowUnit(sender)
+				--end
+			end
+		elseif cmd == "!unfollow" or cmd == "@unfollow" then
+			if GetNumRaidMembers() > 0 then
+				for i=1,GetNumRaidMembers(),1 do
+					if UnitName("player") ~= UnitName("raid"..i) and sender ~= UnitName("raid"..i) and leader ~= UnitName("raid"..i) then
+						FollowUnit(UnitName("raid"..i))
+						break
+					end
+				end
+			elseif GetNumPartyMembers() > 0 then
+				for i=1,GetNumPartyMembers(),1 do
+					if UnitName("player") ~= UnitName("party"..i) and sender ~= UnitName("party"..i) and leader ~= UnitName("party"..i) then
+						FollowUnit(UnitName("party"..i))
+						break
+					end
 				end
 			end
 		elseif cmd == "!promote" or cmd == "@promote" then
