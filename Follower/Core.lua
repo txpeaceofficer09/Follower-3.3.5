@@ -268,17 +268,23 @@ local mountDB = {
 
 local moveKeys = {"MOVEFORWARD", "MOVEBACKWARD", "TURNLEFT", "TURNRIGHT", "STRAFELEFT", "STRAFERIGHT", "JUMP"}
 
-local f = CreateFrame("Frame", nil, UIParent)
+local f = CreateFrame("Frame", "FollowerFrame", UIParent)
 local leader = nil
 local lastZoneChange = nil
-local following = false
+local size = 32
 
 --[[
-local function CreateButton(xOffset, spellID)
+f:SetSize(size, size)
+f:SetPoint("CENTER", UIParent, "CENTER", 0, -200)
+f:SetMovable(true)
+]]
+
+--[[
+local function CreateButton(xOffset, cmd)
         local spellName = GetSpellInfo(spellID)
         local i = (xOffset / size) + 1
-        local buttonName = "BuffWatchFrameButton"..i
-        local button = _G[buttonName] or CreateFrame("Frame", buttonName, parent)
+        local buttonName = "FollowerFrameButton"..i
+        local button = _G[buttonName] or CreateFrame("Frame", buttonName, FollowerFrame)
 
         button:SetSize(size, size)
         button:SetPoint("LEFT", parent, "LEFT", xOffset, 0)
@@ -287,38 +293,22 @@ local function CreateButton(xOffset, spellID)
         button:RegisterForDrag("LeftButton")
         button:SetScript("OnDragStart", function(self) self:GetParent():StartMoving() end)
         button:SetScript("OnDragStop", function(self) self:GetParent():StopMovingOrSizing() end)
-        button:SetAlpha(INACTIVE_ALPHA)
-        button.spellID = spellID
-        --button.duration = duration
+        --button:SetAlpha(INACTIVE_ALPHA)
+        button.cmd = cmd
 
         button.icon = button:CreateTexture(nil, "ARTWORK")
         button.icon:SetSize(size-4, size-4)
         button.icon:SetPoint("CENTER", button, "CENTER", 0, 0)
         button.icon:SetTexture(GetSpellTexture(spellID))
 
-        -- Cooldown Text (optional, for displaying remaining time)
-        button.cooldownText = button:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
-        button.cooldownText:SetPoint("CENTER", button, "CENTER", 0, 0)
-        button.cooldownText:SetJustifyH("CENTER")
-        button.cooldownText:SetTextColor(0, 1, 0, 1)
-        button.cooldownText:SetText("") -- Initially empty
 
-        button.stackText = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        button.stackText:SetPoint("BOTTOM", button, "BOTTOM", 0, 0)
-        button.stackText:SetJustifyH("CENTER")
-        button.stackText:SetTextColor(1, 1, 1, 1)
-        button.stackText:SetText("")
-
-        button:SetScript("OnUpdate", OnUpdate)
-        button:SetScript("OnEvent", OnEvent)
-
-        button:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
         button:Show()
 
         return button
 end
 ]]
+
 
 local function IsFlyingMount(spellID)
 	for _, data in pairs(mountDB) do
@@ -401,7 +391,7 @@ function CastRandomMount()
 	if GetZoneText() == "Naxxramas" and naxxMount ~= nil then
 		CallCompanion("MOUNT", naxxMount)
 	else
-		if not IsFlyableArea() or IsModifierKeyDown() or ( #(switfFlyMounts) == 0 and #(regularFlyMounts) == 0 ) then
+		if not IsFlyableArea() or IsModifierKeyDown() or ( #(swiftFlyMounts) == 0 and #(regularFlyMounts) == 0 ) then
 			--print("Mounting random ground mount.")
 			if #(swiftMounts) > 0 then
 				CallCompanion("MOUNT", swiftMounts[math.random(1, #(swiftMounts))])				
@@ -425,11 +415,11 @@ local function OnEvent(self, event, msg, sender, ...)
 
 		if cmd == "!follow" or cmd == "@follow" then
 			if params ~= "" and params ~= nil then
-				if following == false or params ~= leader then
+				if leader == nil or params ~= leader then
 					FollowUnit(params)
 				end
 			else
-				if following == false or sender ~= leader then
+				if leader == nil or sender ~= leader then
 					FollowUnit(sender)
 				end
 			end
@@ -457,9 +447,8 @@ local function OnEvent(self, event, msg, sender, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		lastZoneChange = GetTime()
 	elseif event == "AUTOFOLLOW_BEGIN" then
-		if following == false or msg ~= leader then
+		if leader == nil or msg ~= leader then
 			leader = msg
-			following = true
 		end
 	elseif event == "AUTOFOLLOW_END" then
 		local brokenByPlayer = false
@@ -479,7 +468,7 @@ local function OnEvent(self, event, msg, sender, ...)
 			end
 		end
 
-		if brokenByPlayer == true then following == false end
+		if brokenByPlayer == true then leader = nil end
 	elseif event == "PLAYER_UNGHOST" then
 		lastZoneChange = GetTime()
 	elseif event == "RESURRECT_REQUEST" then
@@ -514,7 +503,6 @@ local function OnUpdate(self, elapsed)
 	if self.timer >= 0.2 then
 		if lastZoneChange ~= nil and GetTime() - lastZoneChange >= 1 and leader ~= nil then
 			FollowUnit(leader)
-			following = true
 			lastZoneChange = nil
 		end
 
