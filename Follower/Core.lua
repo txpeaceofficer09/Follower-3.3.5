@@ -388,6 +388,8 @@ function CastRandomMount()
 
 	--print(("Found %d swift flying, %d regular flying, %d fast ground, %d regular ground mounts."):format(#(swiftFlyMounts), #(regularFlyMounts), #(swiftMounts), #(regularMounts)))
 
+	if UnitClass("player") == "DRUID" then CancelShapeshiftForm() end
+
 	if GetZoneText() == "Naxxramas" and naxxMount ~= nil then
 		CallCompanion("MOUNT", naxxMount)
 	else
