@@ -344,6 +344,17 @@ local function IsKnownMount(spellID)
 	return known, isNil
 end
 
+local function CancelFormBuff()
+	for i=1,40,1 do
+		local buff = UnitBuff("player", i)
+
+		if buff:find("Form") then
+			CancelUnitBuff("player", i)
+			break
+		end
+	end
+end
+
 function CastRandomMount()
 	local swiftMounts = {}
 	local regularMounts = {}
@@ -388,7 +399,7 @@ function CastRandomMount()
 
 	--print(("Found %d swift flying, %d regular flying, %d fast ground, %d regular ground mounts."):format(#(swiftFlyMounts), #(regularFlyMounts), #(swiftMounts), #(regularMounts)))
 
-	if UnitClass("player") == "DRUID" then CancelShapeshiftForm() end
+	if UnitClass("player") == "DRUID" then CancelFormBuff() end
 
 	if GetZoneText() == "Naxxramas" and naxxMount ~= nil then
 		CallCompanion("MOUNT", naxxMount)
